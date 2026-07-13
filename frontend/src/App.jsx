@@ -76,6 +76,30 @@ export default function App() {
       });
   }, []);
 
+  // SCROLL-REVEAL ANIMATION: setiap section dengan class "reveal-on-scroll"
+  // akan mendapat class "in-view" begitu masuk viewport, memicu animasi fade+slide
+  // di index.css. Ini simple, terlihat jelas, dan tidak mengganggu keterbacaan
+  // karena teks tetap statis begitu section sudah tampil sepenuhnya.
+  useEffect(() => {
+    const targets = document.querySelectorAll('.reveal-on-scroll');
+    if (!targets.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+    );
+
+    targets.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [workItems]);
+
   return (
     <div className="text-white min-vh-100 bg-minegens-dark">
       

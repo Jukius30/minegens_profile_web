@@ -1,7 +1,7 @@
 export default function Work({ workItems }) {
   return (
     <section id="work" className="py-5 bg-minegens-dark border-top border-minegens">
-      <div className="container-xl py-4 fade-in-simple">
+      <div className="container-xl py-4 reveal-on-scroll">
         <div className="mb-4">
           <span className="text-uppercase tracking-widest fw-bold text-sm" style={{ color: '#2f74ff' }}>Our Features</span>
           <h2 className="display-6 fw-bold text-white mt-1">What we are building.</h2>

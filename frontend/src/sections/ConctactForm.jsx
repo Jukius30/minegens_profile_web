@@ -17,7 +17,7 @@ export default function ContactForm() {
 
   return (
     <section id="contact" className="py-5 bg-minegens-dark border-top border-minegens">
-      <div className="container-xl py-4 fade-in-simple">
+      <div className="container-xl py-4 reveal-on-scroll">
         <div className="row g-4 g-md-5">
           
           <div className="col-100 col-md-6 d-flex flex-column justify-content-center">

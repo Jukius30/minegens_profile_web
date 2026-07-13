@@ -11,7 +11,7 @@ export default function Hero({ serverStatus, ipAddress }) {
     >
       <div className="position-absolute top-0 start-0 w-100 h-100" style={{ backgroundColor: 'rgba(30, 44, 86, 0.82)', zIndex: 1 }} />
 
-      <div className="container-xl position-relative py-5 fade-in-simple" style={{ zIndex: 2 }}>
+      <div className="container-xl position-relative py-5 reveal-on-scroll" style={{ zIndex: 2 }}>
         <div className="row">
           <div className="col-lg-8">
             

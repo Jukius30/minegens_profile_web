@@ -33,7 +33,7 @@ export default function News() {
 
   return (
     <section id="news" className="py-5 bg-minegens-dark border-top border-minegens">
-      <div className="container-xl py-4 fade-in-simple">
+      <div className="container-xl py-4 reveal-on-scroll">
         
         {/* Header Seksi News */}
         <div className="mb-5">

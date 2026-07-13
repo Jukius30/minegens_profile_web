@@ -1,7 +1,7 @@
 export default function About() {
   return (
     <section id="about" className="py-5 bg-minegens-dark border-top border-minegens">
-      <div className="container-xl py-4 fade-in-simple">
+      <div className="container-xl py-4 reveal-on-scroll">
         <div className="row align-items-center g-4 g-md-5">
           <div className="col-100 col-md-6">
             <span className="text-uppercase tracking-widest fw-bold text-sm" style={{ color: '#2f74ff' }}>About Us</span>

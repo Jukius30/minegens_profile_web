@@ -1,8 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
 
-/* --- SKALA DASAR & BASE BACKGROUND (Midnight Obsidian) --- */
+/* --- SKALA DASAR & BASE BACKGROUND (Midnight Obsidian) ---
+   Base font-size is now fluid (clamp) instead of a fixed 21px.
+   This is the main reason the site rendered differently across
+   screen sizes: 21px root font only had a fallback below 576px,
+   so every tablet / small-laptop width (577px-1199px) inherited
+   a desktop-scale font and broke the layout / overflowed. */
 html {
-  font-size: 21px !important; 
+  font-size: clamp(15px, 1.1vw + 10px, 18px) !important;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -11,8 +17,9 @@ body {
   font-family: "Inter", system-ui, -apple-system, sans-serif;
   margin: 0;
   -webkit-font-smoothing: antialiased;
-  font-size: 21px !important;
-  line-height: 1.85 !important;
+  font-size: 1rem !important;
+  line-height: 1.75 !important;
+  overflow-x: hidden; /* guard against any residual horizontal overflow on mobile */
 }
 
 /* --- TYPOGRAPHY (PANDUAN WARNA TEKS) --- */
@@ -21,16 +28,23 @@ h1, h2, h3, h4, h5, h6, .display-3, .display-4, .display-5, .display-6, .fw-bold
 }
 
 p, .text-white-50, .text-muted, .nav-link {
-  font-size: 20px !important;
-  line-height: 1.85 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.8 !important;
   color: #A2B6CD !important; /* Teks Deskripsi / Body: Abu-abu kebiruan kalem */
 }
 
 .small, small, .text-sm, ul li, ol li {
-  font-size: 19px !important;
-  line-height: 1.8 !important;
+  font-size: 0.9rem !important;
+  line-height: 1.75 !important;
   color: #A2B6CD !important;
 }
+
+/* Fluid, responsive display headings so hero/section titles never
+   overflow or wrap awkwardly between phone / tablet / laptop / desktop */
+.display-3 { font-size: clamp(2rem, 1.1rem + 3.5vw, 4rem) !important; }
+.display-4 { font-size: clamp(1.75rem, 1rem + 3vw, 3.5rem) !important; }
+.display-5 { font-size: clamp(1.5rem, 1rem + 2vw, 2.75rem) !important; }
+.display-6 { font-size: clamp(1.35rem, 1rem + 1.4vw, 2rem) !important; }
 
 /* Sorotan Angka Statistik & Detail Penting (Neon Ice) */
 .h3.fw-extrabold, .fw-extrabold, [style*="color: rgb(47, 116, 255)"], [style*="color: #2f74ff"] {
@@ -123,10 +137,75 @@ p, .text-white-50, .text-muted, .nav-link {
 
 /* Responsive break points untuk HP Mobile */
 @media (max-width: 576px) {
-  html, body { font-size: 17.5px !important; }
-  p, .text-white-50, ul li, ol li { font-size: 16.5px !important; }
-  .small-mobile-text { font-size: 16px !important; }
+  .small-mobile-text { font-size: 0.85rem !important; }
   .col-100 { width: 100% !important; flex: 0 0 100% !important; max-width: 100% !important; }
+  section { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
+}
+
+/* Tablet (577px - 991px): keep spacing tighter so cards/columns don't
+   feel oversized before Bootstrap's md/lg columns kick in */
+@media (min-width: 577px) and (max-width: 991px) {
+  section { padding-top: 3rem !important; padding-bottom: 3rem !important; }
+}
+
+/* Small laptop (992px - 1199px): this is where the old fixed 21px
+   font used to break layouts the worst since it sits below Bootstrap's
+   xl breakpoint but is still a very common laptop resolution */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .custom-navbar .nav-link { font-size: 0.85rem !important; }
+}
+
+/* --- SIMPLE, VISIBLE ENTRANCE ANIMATIONS ---
+   Note: `.fade-in-simple` was referenced throughout the app but was
+   never actually defined anywhere, so nothing ever animated. Added here. */
+@keyframes fadeInSimple {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in-simple {
+  animation: fadeInSimple 0.6s ease-out both;
+}
+
+/* Scroll-triggered reveal used for main page sections. Starts hidden,
+   App.jsx toggles `.in-view` via IntersectionObserver as the user scrolls. */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.reveal-on-scroll.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children (cards) inside a revealed section for a livelier,
+   still-simple, still-readable effect */
+.reveal-on-scroll .row > * {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+.reveal-on-scroll.in-view .row > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-on-scroll.in-view .row > *:nth-child(1) { transition-delay: 0.05s; }
+.reveal-on-scroll.in-view .row > *:nth-child(2) { transition-delay: 0.12s; }
+.reveal-on-scroll.in-view .row > *:nth-child(3) { transition-delay: 0.19s; }
+.reveal-on-scroll.in-view .row > *:nth-child(4) { transition-delay: 0.26s; }
+.reveal-on-scroll.in-view .row > *:nth-child(n+5) { transition-delay: 0.32s; }
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .fade-in-simple,
+  .reveal-on-scroll,
+  .reveal-on-scroll .row > * {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 /* --- THE NEW MODERN NAVBAR CONFIGS --- */
@@ -142,17 +221,19 @@ p, .text-white-50, .text-muted, .nav-link {
 }
 
 .custom-navbar .nav-link {
-  font-size: 16px !important; /* Standar ukuran teks navigasi desktop premium */
+  font-size: 0.9rem !important; /* Standar ukuran teks navigasi desktop premium */
   line-height: 1.5 !important;
   display: flex;
   align-items: center;
+  white-space: nowrap;
 }
 
 .custom-navbar .btn.custom-btn-store,
 .custom-navbar .btn.custom-btn-discord {
-  font-size: 15px !important;
+  font-size: 0.85rem !important;
   padding: 6px 20px !important; /* Membuat tombol lebih ramping seperti di referensi gambar */
   line-height: 1.5 !important;
+  white-space: nowrap;
 }
 
 .custom-nav-pill, .custom-nav-pill-dropdown {
