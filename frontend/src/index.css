@@ -1,0 +1,195 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
+
+/* --- SKALA DASAR & BASE BACKGROUND (Midnight Obsidian) --- */
+html {
+  font-size: 21px !important; 
+}
+
+body {
+  background-color: #040D1A !important; /* Midnight Obsidian */
+  color: #E2EDF7; /* Metallic Silver */
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  font-size: 21px !important;
+  line-height: 1.85 !important;
+}
+
+/* --- TYPOGRAPHY (PANDUAN WARNA TEKS) --- */
+h1, h2, h3, h4, h5, h6, .display-3, .display-4, .display-5, .display-6, .fw-bold {
+  color: #E2EDF7 !important; /* Teks Judul / Heading: Metallic Silver */
+}
+
+p, .text-white-50, .text-muted, .nav-link {
+  font-size: 20px !important;
+  line-height: 1.85 !important;
+  color: #A2B6CD !important; /* Teks Deskripsi / Body: Abu-abu kebiruan kalem */
+}
+
+.small, small, .text-sm, ul li, ol li {
+  font-size: 19px !important;
+  line-height: 1.8 !important;
+  color: #A2B6CD !important;
+}
+
+/* Sorotan Angka Statistik & Detail Penting (Neon Ice) */
+.h3.fw-extrabold, .fw-extrabold, [style*="color: rgb(47, 116, 255)"], [style*="color: #2f74ff"] {
+  color: #8CE1FF !important; /* Neon Ice */
+  text-shadow: 0 0 12px rgba(140, 225, 255, 0.25);
+}
+
+/* --- NAVBAR CUSTOM COLOR (Charcoal Gelap Mengikuti Request Sebelumnya) --- */
+.navbar.bg-minegens-dark { 
+  background-color: #16171b !important; /* Tetap mempertahankan warna hitam arang soft request Anda */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+/* --- HUBUNGAN KOMPONEN AKTIF & BACKGROUND SEKSI --- */
+.bg-minegens-dark { 
+  background-color: #040D1A !important; /* Latar Belakang Utama: Midnight Obsidian */
+}
+
+.bg-minegens-surface { 
+  background-color: #0A1C3A !important; /* Background Card / Box Konten: Deep Space Navy */
+}
+
+.border-minegens, [className*="border-minegens"] { 
+  border-color: #16376B !important; /* Border pemisah rapi kustom */
+}
+
+.bg-white-5 { 
+  background-color: rgba(50, 181, 245, 0.05) !important; /* Efek cyan transparan translucency */
+}
+
+/* --- TOMBOL UTAMA & INTERAKTIF (Cyber Cyan & Neon Ice Hover) --- */
+.btn, .bg-minegens-accent {
+  background-color: #32B5F5 !important; /* Cyber Cyan */
+  color: #040D1A !important; /* Teks gelap Midnight Obsidian */
+  font-weight: 700 !important;
+  font-size: 19px !important;
+  border: 1px solid #32B5F5 !important;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 4px 12px rgba(50, 181, 245, 0.2);
+}
+
+.btn:hover, .btn:focus {
+  background-color: #8CE1FF !important; /* Hover: Neon Ice */
+  color: #040D1A !important;
+  border-color: #8CE1FF !important;
+  box-shadow: 0 0 15px rgba(140, 225, 255, 0.5); /* Outer Glow tipis */
+  transform: translateY(-1px);
+}
+
+/* Form Input Field di Seksi Contact */
+.form-control {
+  font-size: 19px !important;
+  background-color: #040D1A !important;
+  color: #E2EDF7 !important;
+  border: 1px solid #16376B !important;
+}
+.form-control:focus {
+  border-color: #32B5F5 !important;
+  box-shadow: 0 0 10px rgba(50, 181, 245, 0.25) !important;
+}
+
+/* --- EFECT ACTIVE PATH TRACKING (Cyber Cyan) --- */
+.text-minegens-active {
+  color: #32B5F5 !important;
+  text-shadow: 0 0 8px rgba(50, 181, 245, 0.5);
+}
+
+/* --- KARTU PREMIUM HOVER (Deep Space Navy Card Transformation) --- */
+.hover-premium {
+  background-color: #0A1C3A !important;
+  border: 1px solid #16376B !important;
+  transition: all 0.25s ease-in-out;
+}
+.hover-premium:hover {
+  transform: translateY(-4px);
+  border-color: #8CE1FF !important; /* Border menyala Neon Ice saat disentuh */
+  background-color: #0d244a !important; /* Deep Space Navy yang sedikit lebih terang */
+  box-shadow: 0 12px 30px rgba(4, 13, 26, 0.6);
+}
+
+/* Link biasa di footer */
+.hover-white:hover { 
+  color: #8CE1FF !important; /* Mengubah hover link kecil menjadi Neon Ice */
+}
+
+.backdrop-blur { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.max-w-52ch { max-width: 75ch; } 
+.max-w-640px { max-width: 850px; }
+.place-items-center { display: grid; align-content: center; justify-content: center; }
+
+/* Responsive break points untuk HP Mobile */
+@media (max-width: 576px) {
+  html, body { font-size: 17.5px !important; }
+  p, .text-white-50, ul li, ol li { font-size: 16.5px !important; }
+  .small-mobile-text { font-size: 16px !important; }
+  .col-100 { width: 100% !important; flex: 0 0 100% !important; max-width: 100% !important; }
+}
+
+/* --- THE NEW MODERN NAVBAR CONFIGS --- */
+.custom-navbar {
+  background-color: #0c0d12 !important; /* Matte dark, matches the reference */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Rounded Pill Active Box (Like "Home" in your image) */
+.custom-nav-pill {
+  border: 1px solid #c84b31 !important; /* Soft reddish copper outline */
+  background-color: rgba(200, 75, 49, 0.08) !important;
+  border-radius: 8px !important;
+}
+
+/* More Dropdown Pill Active Box */
+.custom-nav-pill-dropdown {
+  border: 2px solid #ffffff !important; /* Solid thick white border */
+  border-radius: 8px !important;
+}
+
+/* Floating Dropdown Card styling */
+.custom-dropdown-menu {
+  background-color: #161822 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  min-width: 180px;
+  left: 0;
+  z-index: 1000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+.dropdown-item {
+  background: transparent !important;
+  transition: color 0.2s ease;
+}
+
+/* --- THE CTA BRAND BUTTONS --- */
+/* Store (Vibrant Orange Gradient) */
+.btn.custom-btn-store {
+  background: linear-gradient(135deg, #ff7b36 0%, #ff521d 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(255, 82, 29, 0.3) !important;
+}
+.btn.custom-btn-store:hover {
+  background: linear-gradient(135deg, #ff9254 0%, #ff683b 100%) !important;
+  box-shadow: 0 4px 20px rgba(255, 82, 29, 0.5) !important;
+}
+
+/* Discord (Deep Clean Cyan/Blue Gradient) */
+.btn.custom-btn-discord {
+  background: linear-gradient(135deg, #2eb5f5 0%, #1c82d4 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 15px rgba(46, 181, 245, 0.3) !important;
+}
+.btn.custom-btn-discord:hover {
+  background: linear-gradient(135deg, #51c4f7 0%, #3598e6 100%) !important;
+  box-shadow: 0 4px 20px rgba(46, 181, 245, 0.5) !important;
+}
+
+/* Responsive divider fixes */
+@media (min-width: 1200px) {
+  .border-start-xl {
+    border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+}
