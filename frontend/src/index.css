@@ -131,10 +131,32 @@ p, .text-white-50, .text-muted, .nav-link {
 
 /* --- THE NEW MODERN NAVBAR CONFIGS --- */
 .custom-navbar {
-  background-color: #0c0d12 !important; /* Matte dark, matches the reference */
+  background-color: #0c0d12 !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  
+  /* Mengunci tinggi navbar secara paksa agar tidak terpengaruh font-size html global */
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+.custom-navbar .nav-link {
+  font-size: 16px !important; /* Standar ukuran teks navigasi desktop premium */
+  line-height: 1.5 !important;
+  display: flex;
+  align-items: center;
+}
+
+.custom-navbar .btn.custom-btn-store,
+.custom-navbar .btn.custom-btn-discord {
+  font-size: 15px !important;
+  padding: 6px 20px !important; /* Membuat tombol lebih ramping seperti di referensi gambar */
+  line-height: 1.5 !important;
+}
+
+.custom-nav-pill, .custom-nav-pill-dropdown {
+  padding: 4px 16px !important;
 }
 
 /* Rounded Pill Active Box (Like "Home" in your image) */
