@@ -75,9 +75,9 @@ export default function StaffPage() {
           description: "Oversees the overall direction and strategy of the MineGens project."
         },
         {
-          name: "Dapp",
+          name: "ItsDapp",
           role: "Admin",
-          avatar: "https://minotar.net/helm/itsdapp_/100.png",
+          avatar: "https://minotar.net/helm/Noyuutz/100.png",
           description: "Oversees the overall direction and strategy of the MineGens project."
         },
         {
