@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import Navbar from "../common/Navbar.jsx";
 import Footer from "../common/Footer.jsx";
 import MarkdownRenderer from "../common/MarkdownRenderer.jsx";
+import InlineMarkdown from "../common/InlineMarkdown.jsx";
 
 const DEFAULT_BANNER = "/Discord_Banner_Minegens_2.png";
 
@@ -41,7 +42,6 @@ export default function NewsDetailPage() {
 
       <main className="container-xl py-5 flex-grow-1" style={{ marginTop: "90px" }}>
         <div className="mx-auto" style={{ maxWidth: "860px" }}>
-          
           {/* Tombol Navigasi Kembali */}
           <button
             onClick={() => navigate(-1)}
@@ -115,9 +115,9 @@ export default function NewsDetailPage() {
                 </span>
               </div>
 
-              {/* Judul Berita */}
+              {/* Judul Berita Mendukung Markdown */}
               <h1 className="h2 fw-bold text-white mb-4" style={{ lineHeight: "1.3" }}>
-                {article.title}
+                <InlineMarkdown content={article.title} />
               </h1>
 
               {/* Banner Image */}
@@ -137,7 +137,7 @@ export default function NewsDetailPage() {
                 />
               </div>
 
-              {/* Konten Lengkap (Markdown + Tabel + Bold) */}
+              {/* Konten Lengkap (Markdown) */}
               <div
                 className="p-4 p-md-5 rounded-3 border border-white border-opacity-10 shadow-sm"
                 style={{ backgroundColor: "#161b26" }}
@@ -146,7 +146,6 @@ export default function NewsDetailPage() {
               </div>
             </article>
           )}
-
         </div>
       </main>
 

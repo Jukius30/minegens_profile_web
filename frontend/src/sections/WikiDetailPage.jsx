@@ -3,9 +3,10 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import Navbar from "../common/Navbar.jsx";
 import Footer from "../common/Footer.jsx";
 import MarkdownRenderer from "../common/MarkdownRenderer.jsx";
+import InlineMarkdown from "../common/InlineMarkdown.jsx";
 
 const categoryLabels = {
-  general: "Supporting AlwiNation",
+  general: "Supporting Minegens",
   oneblock: "OneBlock",
   tycoon: "Tycoon",
   rpg: "Survival RPG",
@@ -48,7 +49,6 @@ export default function WikiDetailPage() {
 
       <main className="container-xl py-5 flex-grow-1" style={{ marginTop: "90px" }}>
         <div className="mx-auto" style={{ maxWidth: "860px" }}>
-          
           {/* Tombol Navigasi Kembali */}
           <button
             onClick={() => navigate(-1)}
@@ -125,9 +125,9 @@ export default function WikiDetailPage() {
                 </span>
               </div>
 
-              {/* Judul Wiki */}
+              {/* Judul Wiki Mendukung Markdown */}
               <h1 className="h2 fw-bold text-white mb-3" style={{ lineHeight: "1.3" }}>
-                {wiki.title}
+                <InlineMarkdown content={wiki.title} />
               </h1>
 
               {/* Ringkasan Header */}
@@ -135,7 +135,7 @@ export default function WikiDetailPage() {
                 {wiki.short_desc}
               </p>
 
-              {/* Isi Konten Lengkap (Markdown + Tabel + Bold) */}
+              {/* Isi Konten Lengkap (Markdown) */}
               <div
                 className="p-4 p-md-5 rounded-4 border shadow-sm"
                 style={{
@@ -147,7 +147,6 @@ export default function WikiDetailPage() {
               </div>
             </article>
           )}
-
         </div>
       </main>
 

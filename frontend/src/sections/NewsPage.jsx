@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../common/Navbar.jsx";
 import Footer from "../common/Footer.jsx";
+import InlineMarkdown from "../common/InlineMarkdown.jsx";
 
 const DEFAULT_BANNER = "/Discord_Banner_Minegens_2.png";
 
@@ -13,14 +14,10 @@ export default function NewsPage() {
     window.scrollTo(0, 0);
 
     fetch("http://127.0.0.1:8000/api/news", {
-      headers: {
-        Accept: "application/json",
-      },
+      headers: { Accept: "application/json" },
     })
       .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         return res.json();
       })
       .then((data) => {
@@ -39,7 +36,6 @@ export default function NewsPage() {
 
       <main className="container-xl py-5 flex-grow-1 fade-in-simple" style={{ marginTop: "90px" }}>
         <div className="mx-auto" style={{ maxWidth: "1100px" }}>
-          
           {/* Tombol Kembali Modern ke Home */}
           <Link
             to="/"
@@ -68,7 +64,10 @@ export default function NewsPage() {
 
           {/* Header Halaman */}
           <div className="mb-5">
-            <span className="small text-uppercase fw-semibold" style={{ color: "#2f74ff", letterSpacing: "0.08em" }}>
+            <span
+              className="small text-uppercase fw-semibold"
+              style={{ color: "#2f74ff", letterSpacing: "0.08em" }}
+            >
               News Archive
             </span>
             <h1 className="h2 fw-bold text-white mt-1 mb-2">
@@ -135,7 +134,7 @@ export default function NewsPage() {
                             : "—"}
                         </div>
 
-                        {/* Judul (Maksimal 2 baris) */}
+                        {/* Judul Mendukung Markdown */}
                         <h3
                           className="h6 fw-semibold text-white mb-2"
                           style={{
@@ -146,10 +145,10 @@ export default function NewsPage() {
                             overflow: "hidden",
                           }}
                         >
-                          {item.title}
+                          <InlineMarkdown content={item.title} />
                         </h3>
 
-                        {/* Deskripsi (Maksimal 3 baris) */}
+                        {/* Deskripsi */}
                         <p
                           className="text-white-50 small mb-4"
                           style={{
@@ -183,7 +182,6 @@ export default function NewsPage() {
               })}
             </div>
           )}
-
         </div>
       </main>
 

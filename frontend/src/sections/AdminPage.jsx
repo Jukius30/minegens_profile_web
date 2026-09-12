@@ -295,7 +295,6 @@ export default function AdminPage() {
       <Navbar />
 
       <main className="container-xl py-5 flex-grow-1" style={{ marginTop: "90px" }}>
-        
         {/* Header Console */}
         <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 pb-4 mb-4 border-bottom border-white border-opacity-10">
           <div>
@@ -428,20 +427,20 @@ export default function AdminPage() {
                       onChange={(e) => setNewsShortDesc(e.target.value)}
                       className="form-control text-white border-white border-opacity-10 rounded-2"
                       style={{ backgroundColor: "#0b0f17" }}
-                      placeholder="1-2 kalimat ringkasan..."
+                      placeholder="1-2 kalimat ringkasan kartu depan..."
                     />
                   </div>
 
                   <div>
-                    <label className="small text-white-50 mb-1">Isi Berita Lengkap</label>
+                    <label className="small text-white-50 mb-1">Isi Berita Lengkap (Markdown)</label>
                     <textarea
-                      rows={5}
+                      rows={8}
                       required
                       value={newsFullContent}
                       onChange={(e) => setNewsFullContent(e.target.value)}
-                      className="form-control text-white border-white border-opacity-10 rounded-2"
-                      style={{ backgroundColor: "#0b0f17" }}
-                      placeholder="Detail perubahan, link discord, dsb..."
+                      className="form-control text-white border-white border-opacity-10 rounded-2 font-monospace"
+                      style={{ backgroundColor: "#0b0f17", fontSize: "13px" }}
+                      placeholder="Tempel teks Markdown langsung di sini..."
                     />
                   </div>
 
@@ -554,7 +553,7 @@ export default function AdminPage() {
                 <form onSubmit={handleWikiSubmit} className="d-flex flex-column gap-3">
                   {/* Kategori */}
                   <div>
-                    <label className="small text-white-50 mb-1">Kategori / Topik</label>
+                    <label className="small text-white-50 mb-1">Kategori / Realm</label>
                     <select
                       value={wikiCategory}
                       onChange={(e) => setWikiCategory(e.target.value)}
@@ -571,14 +570,14 @@ export default function AdminPage() {
 
                   {/* Badge Label */}
                   <div>
-                    <label className="small text-white-50 mb-1">Badge Tag (Label Singkat)</label>
+                    <label className="small text-white-50 mb-1">Badge Tag</label>
                     <input
                       type="text"
                       value={wikiBadge}
                       onChange={(e) => setWikiBadge(e.target.value)}
                       className="form-control text-white border-white border-opacity-10 rounded-2"
                       style={{ backgroundColor: "#0b0f17" }}
-                      placeholder="Contoh: Economy, Perks, Marketplace, Game Mode..."
+                      placeholder="Contoh: Economy, Game Mode, Commands..."
                     />
                   </div>
 
@@ -592,13 +591,13 @@ export default function AdminPage() {
                       onChange={(e) => setWikiTitle(e.target.value)}
                       className="form-control text-white border-white border-opacity-10 rounded-2"
                       style={{ backgroundColor: "#0b0f17" }}
-                      placeholder="Contoh: Auction House (AH) Guides..."
+                      placeholder="Contoh: Gens Tycoon: Dawn Of Infinity Sword"
                     />
                   </div>
 
                   {/* Deskripsi Singkat */}
                   <div>
-                    <label className="small text-white-50 mb-1">Ringkasan Singkat (Card Luar)</label>
+                    <label className="small text-white-50 mb-1">Ringkasan Singkat</label>
                     <textarea
                       rows={2}
                       required
@@ -606,21 +605,21 @@ export default function AdminPage() {
                       onChange={(e) => setWikiShortDesc(e.target.value)}
                       className="form-control text-white border-white border-opacity-10 rounded-2"
                       style={{ backgroundColor: "#0b0f17" }}
-                      placeholder="Penjelasan 1-2 baris untuk tampilan depan..."
+                      placeholder="Ringkasan singkat untuk tampilan kartu..."
                     />
                   </div>
 
                   {/* Konten Lengkap */}
                   <div>
-                    <label className="small text-white-50 mb-1">Konten Panduan Lengkap</label>
+                    <label className="small text-white-50 mb-1">Konten Panduan Lengkap (Markdown)</label>
                     <textarea
-                      rows={6}
+                      rows={10}
                       required
                       value={wikiFullContent}
                       onChange={(e) => setWikiFullContent(e.target.value)}
-                      className="form-control text-white border-white border-opacity-10 rounded-2"
-                      style={{ backgroundColor: "#0b0f17" }}
-                      placeholder="Tuliskan command, mekanisme, aturan klaim, dan tips lengkap..."
+                      className="form-control text-white border-white border-opacity-10 rounded-2 font-monospace"
+                      style={{ backgroundColor: "#0b0f17", fontSize: "13px" }}
+                      placeholder="Tempel seluruh format Markdown (tabel, heading, flow progression) di sini..."
                     />
                   </div>
 

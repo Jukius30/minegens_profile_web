@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import InlineMarkdown from "../common/InlineMarkdown.jsx";
 
 const DEFAULT_BANNER = "/Discord_Banner_Minegens_2.png";
 
@@ -9,14 +10,10 @@ export default function NewsSection() {
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/api/news", {
-      headers: {
-        Accept: "application/json",
-      },
+      headers: { Accept: "application/json" },
     })
       .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         return res.json();
       })
       .then((data) => {
@@ -32,13 +29,19 @@ export default function NewsSection() {
   const latestNews = newsItems.slice(0, 3);
 
   return (
-    <section id="news" className="py-5 border-top border-white border-opacity-10 text-white" style={{ backgroundColor: "#0f172a" }}>
+    <section
+      id="news"
+      className="py-5 border-top border-white border-opacity-10 text-white"
+      style={{ backgroundColor: "#0f172a" }}
+    >
       <div className="container-xl py-4">
-        
         {/* Header Seksi */}
         <div className="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-5">
           <div>
-            <span className="small text-uppercase fw-semibold" style={{ color: "#2f74ff", letterSpacing: "0.08em" }}>
+            <span
+              className="small text-uppercase fw-semibold"
+              style={{ color: "#2f74ff", letterSpacing: "0.08em" }}
+            >
               Latest Updates
             </span>
             <h2 className="h2 fw-bold text-white mt-1 mb-2">
@@ -113,7 +116,7 @@ export default function NewsSection() {
                           : "—"}
                       </div>
 
-                      {/* Judul (Maksimal 2 baris) */}
+                      {/* Judul Mendukung Markdown */}
                       <h3
                         className="h6 fw-semibold text-white mb-2"
                         style={{
@@ -124,10 +127,10 @@ export default function NewsSection() {
                           overflow: "hidden",
                         }}
                       >
-                        {item.title}
+                        <InlineMarkdown content={item.title} />
                       </h3>
 
-                      {/* Deskripsi (Maksimal 3 baris) */}
+                      {/* Deskripsi */}
                       <p
                         className="text-white-50 small mb-4"
                         style={{
@@ -161,7 +164,6 @@ export default function NewsSection() {
             })}
           </div>
         )}
-
       </div>
     </section>
   );
