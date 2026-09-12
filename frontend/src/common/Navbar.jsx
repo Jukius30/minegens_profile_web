@@ -48,7 +48,12 @@ export default function Navbar() {
   }, []);
 
   const getNavLinkClass = (hash) => {
-    const isActive = location.pathname === "/" && activeSection === hash;
+    // Aktifkan jika berada di scroll section halaman home, ATAU jika hash 'news' dan rute adalah '/news'
+    const isNewsActive = hash === "news" && location.pathname === "/news";
+    const isSectionActive = location.pathname === "/" && activeSection === hash;
+
+    const isActive = isNewsActive || isSectionActive;
+
     return `nav-link px-3 py-1 fw-medium ${isActive ? "text-white custom-nav-pill" : "text-white-50 hover-white"}`;
   };
 
@@ -127,7 +132,6 @@ export default function Navbar() {
             </a>
 
             {/* "MORE" DROPDOWN CONTAINER */}
-            {/* "MORE" DROPDOWN CONTAINER */}
             <div className="position-relative" ref={dropdownRef}>
               <button
                 className={`nav-link px-3 py-1 fw-medium btn border-0 bg-transparent text-start d-flex align-items-center gap-1 ${isMorePageActive || dropdownOpen ? "text-white custom-nav-pill-dropdown" : "text-white-50 hover-white"}`}
@@ -135,7 +139,6 @@ export default function Navbar() {
                 style={{ outline: "none", boxShadow: "none" }}
               >
                 <span>More</span>
-                {/* PERBAIKAN: Jika dropdownOpen true maka ▲ (up), jika false maka ▼ (down) */}
                 <span
                   style={{
                     fontSize: "11px",
@@ -179,16 +182,6 @@ export default function Navbar() {
                     }}
                   >
                     Rules
-                  </Link>
-                  <Link
-                    className="dropdown-item px-4 py-2 text-white-50 hover-white small"
-                    to="/terms"
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      setIsOpen(false);
-                    }}
-                  >
-                    Terms
                   </Link>
                 </div>
               )}

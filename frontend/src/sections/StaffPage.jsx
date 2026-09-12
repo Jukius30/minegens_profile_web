@@ -39,13 +39,7 @@ export default function StaffPage() {
           description: "Configures server jar optimization, hardware allocation nodes, and anti-cheat modules."
         },
         {
-          name: "XetaDos",
-          role: "Plugin Developer",
-          avatar: "https://minotar.net/helm/XetaDos/100.png",
-          description: "Balances custom RPG plugins, economy engines, items configs, and special dungeon drop rates."
-        },
-        {
-          name: "DetraisMC",
+          name: "ItzDeDet",
           role: "Plugin Developer",
           avatar: "https://minotar.net/helm/DetraisMC/100.png",
           description: "Develops and maintains custom plugins, ensuring smooth gameplay and server stability."
@@ -77,8 +71,8 @@ export default function StaffPage() {
         {
           name: "ItsDapp",
           role: "Admin",
-          avatar: "https://minotar.net/helm/Noyuutz/100.png",
-          description: "Oversees the overall direction and strategy of the MineGens project."
+          avatar: "https://minotar.net/helm/ItsDapp/100.png",
+          description: "Spesializes to make the player angry."
         },
         {
           name: "Mutti",
@@ -91,18 +85,6 @@ export default function StaffPage() {
           role: "Admin",
           avatar: "https://minotar.net/helm/Waltz/100.png",
           description: "Oversees the overall direction and strategy of the MineGens project."
-        }
-      ]
-    },
-    {
-      rankTitle: "Community Operations",
-      rankColor: "#8CE1FF", // Neon Ice for Staff/Moderators
-      members: [
-        {
-          name: "Jund4n",
-          role: "Head Community Moderator",
-          avatar: "https://minotar.net/helm/Jund4n/100.png",
-          description: "Manages player reports, Discord tickets support framework, and in-game safety standards."
         }
       ]
     }

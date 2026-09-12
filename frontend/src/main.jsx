@@ -1,35 +1,53 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import App from './App.jsx';
-import RulesPage from './sections/RulesPage.jsx'; // Existing page Example
-import TermsPage from './sections/TermsPage.jsx'; // Existing page Example
-import StaffPage from './sections/StaffPage.jsx'; // <-- 1. IMPORT YOUR NEW STAFF PAGE HERE
-import 'bootstrap/dist/css/bootstrap.min.css'
-import './index.css';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import App from "./App.jsx";
+import RulesPage from "./sections/RulesPage.jsx";
+import StaffPage from "./sections/StaffPage.jsx";
+import NewsPage from "./sections/NewsPage.jsx";
+import WikiPage from "./sections/WikiPage.jsx";
+import LoginPage from "./sections/LoginPage.jsx";
+import AdminPage from "./sections/AdminPage.jsx";
+import NewsDetailPage from "./sections/NewsDetailPage.jsx";
+import WikiDetailPage from './sections/WikiDetailPage.jsx';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./index.css";
 
-// 2. REGISTER THE ROUTE JALUR PATH DI SINI
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <App />,
   },
   {
-    path: '/rules',
+    path: "/rules",
     element: <RulesPage />,
   },
   {
-    path: '/terms',
-    element: <TermsPage />,
+    path: "/staff",
+    element: <StaffPage />,
   },
   {
-    path: '/staff', // <-- This must match the target in your Navbar link exactly
-    element: <StaffPage />,
+    path: "/news",
+    element: <NewsPage />,
+  },
+  { path: "/news/:id", element: <NewsDetailPage /> },
+  {
+    path: "/wiki",
+    element: <WikiPage />,
+  },
+  { path: '/wiki/:id', element: <WikiDetailPage /> },
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/admin",
+    element: <AdminPage />,
   },
 ]);
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <RouterProvider router={router} />
-  </React.StrictMode>
+  </React.StrictMode>,
 );

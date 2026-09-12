@@ -9,7 +9,6 @@ import Work from './sections/Work.jsx';
 import ContactForm from './sections/ConctactForm.jsx';
 import './index.css';
 
-// Memperbarui alamat server utama sesuai domain API terbaru
 const SERVER_ADDRESS = 'minegens.id';
 
 export default function App() {
@@ -18,11 +17,10 @@ export default function App() {
     loading: true, 
     online: false, 
     players: 0, 
-    maxPlayers: 0,
-    version: "1.21" // Menyediakan default value untuk versi game
+    maxPlayers: 0, 
+    version: "1.21" 
   });
 
-  // Fungsi penembak API status server mcsrvstat yang bisa dipanggil berulang kali
   const checkStatus = async () => {
     try {
       const res = await fetch(`https://api.mcsrvstat.us/3/${SERVER_ADDRESS}`);
@@ -41,7 +39,7 @@ export default function App() {
           loading: false, 
           online: false, 
           players: 0, 
-          maxPlayers: 0,
+          maxPlayers: 0, 
           version: "—" 
         });
       }
@@ -51,35 +49,26 @@ export default function App() {
     }
   };
 
-  // LOOP AUTO-UPDATE TANPA REFRESH HALAMAN
   useEffect(() => {
-    // Jalankan pengecekan pertama kali saat halaman dimuat
     checkStatus();
-
-    // Jalankan background polling otomatis setiap 30 detik sekali secara senyap
     const intervalId = setInterval(() => {
       checkStatus();
-    }, 30000); // 30000ms = 30 detik
+    }, 30000);
 
-    // Bersihkan interval pemanggilan saat komponen unmount agar performa browser tetap enteng
     return () => clearInterval(intervalId);
   }, []);
 
-  // FETCH DATA WORK ITEMS (TETAP DIBAWA DARI KODE LAMA)
   useEffect(() => {
     axios.get('http://localhost:5000/api/work-items')
       .then(res => setWorkItems(res.data))
       .catch(() => {
         setWorkItems([
-          { title: 'Minegens RPG Core', description: 'We build and manage Minecraft server experiences integrated with elemental RPG systems.' }
+          { title: 'Surivival RPG Core', description: 'We build and manage Minecraft server experiences integrated with elemental RPG systems.' },
+          { title: 'Minegens Plugins Core', description: 'We develop custom plugins to enhance gameplay, add new features, and optimize server performance.' },
         ]);
       });
   }, []);
 
-  // SCROLL-REVEAL ANIMATION: setiap section dengan class "reveal-on-scroll"
-  // akan mendapat class "in-view" begitu masuk viewport, memicu animasi fade+slide
-  // di index.css. Ini simple, terlihat jelas, dan tidak mengganggu keterbacaan
-  // karena teks tetap statis begitu section sudah tampil sepenuhnya.
   useEffect(() => {
     const targets = document.querySelectorAll('.reveal-on-scroll');
     if (!targets.length) return;
@@ -102,20 +91,15 @@ export default function App() {
 
   return (
     <div className="text-white min-vh-100 bg-minegens-dark">
-      
-      {/* 1. Navbar Modular */}
       <Navbar />
 
       <main style={{ paddingTop: '72px' }}>
-        
-        {/* Banner Donasi Biru Neon */}
         <div className="bg-minegens-accent text-white py-3 text-center fw-bold tracking-wide shadow-sm">
           <div className="container">
             Ayo donasi dan dukung Minegens
           </div>
         </div>
 
-        {/* 2. Main Page Sections (Mendukung data real-time baru) */}
         <Hero serverStatus={serverStatus} ipAddress={SERVER_ADDRESS} />
         <News />
         <About />
@@ -123,9 +107,7 @@ export default function App() {
         <ContactForm />
       </main>
 
-      {/* 3. Footer Modular */}
       <Footer />
-      
     </div>
   );
 }
