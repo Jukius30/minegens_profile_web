@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import Navbar from './common/Navbar.jsx';
 import Footer from './common/Footer.jsx';
 import Hero from './sections/Hero.jsx';
@@ -11,8 +10,19 @@ import './index.css';
 
 const SERVER_ADDRESS = 'minegens.id';
 
+const DEFAULT_WORK_ITEMS = [
+  {
+    title: 'Surivival RPG Core',
+    description: 'We build and manage Minecraft server experiences integrated with elemental RPG systems.'
+  },
+  {
+    title: 'Minegens Plugins Core',
+    description: 'We develop custom plugins to enhance gameplay, add new features, and optimize server performance.'
+  }
+];
+
 export default function App() {
-  const [workItems, setWorkItems] = useState([]);
+  const [workItems, setWorkItems] = useState(DEFAULT_WORK_ITEMS);
   const [serverStatus, setServerStatus] = useState({ 
     loading: true, 
     online: false, 
@@ -44,7 +54,7 @@ export default function App() {
         });
       }
     } catch (error) {
-      console.error("Gagal sinkronisasi data dengan node API:", error);
+      console.error("Gagal sinkronisasi status server:", error);
       setServerStatus(prev => ({ ...prev, loading: false }));
     }
   };
@@ -56,17 +66,6 @@ export default function App() {
     }, 30000);
 
     return () => clearInterval(intervalId);
-  }, []);
-
-  useEffect(() => {
-    axios.get('http://localhost:5000/api/work-items')
-      .then(res => setWorkItems(res.data))
-      .catch(() => {
-        setWorkItems([
-          { title: 'Surivival RPG Core', description: 'We build and manage Minecraft server experiences integrated with elemental RPG systems.' },
-          { title: 'Minegens Plugins Core', description: 'We develop custom plugins to enhance gameplay, add new features, and optimize server performance.' },
-        ]);
-      });
   }, []);
 
   useEffect(() => {

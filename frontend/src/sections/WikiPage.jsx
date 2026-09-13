@@ -2,114 +2,11 @@ import React, { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../common/Navbar.jsx";
 import Footer from "../common/Footer.jsx";
-
-// Master konfigurasi kategori MineGens
-const CATEGORY_CONFIG = {
-  general: {
-    label: "Supporting MineGens",
-    icon: "⭐",
-    description: "Pelajari berbagai cara mendukung MineGens serta keuntungan dan rank perk eksklusif.",
-  },
-  sf: {
-    label: "OneBlock Slimefun",
-    icon: "💿",
-    description: "Mulai petualangan dari satu blok dan bangun pulau canggih berbasis mesin Slimefun dan otomatisasi.",
-  },
-  oneblock: {
-    label: "Oneblock Classic",
-    icon: "🍀",
-    description: "Pengalaman OneBlock klasik dengan fase bertingkat, tantangan pulau, dan custom generator.",
-  },
-  tycoon: {
-    label: "Tycoon",
-    icon: "💰",
-    description: "Pasang generator otomatis, upgrade tier drop, jual beli resource, dan bangun kerajaan bisnismu.",
-  },
-  prison: {
-    label: "Prison",
-    icon: "🔑",
-    description: "Mining ore, rank up dari rank awal hingga prestige tertinggi, dan kuasai ekonomi prison.",
-  },
-  started: {
-    label: "Getting Started",
-    icon: "🚀",
-    description: "Panduan dasar untuk pemain baru, aturan server, dan command penting untuk memulai permainan.",
-  },
-  realms: {
-    label: "Realms",
-    icon: "🌐",
-    description: "Jelajahi seluruh game mode yang tersedia di MineGens beserta jadwal event dan mekaniknya.",
-  },
-  economy: {
-    label: "Economy & Shops",
-    icon: "🛍️",
-    description: "Pasar pemain, Auction House, sistem trade, dan strategi mencari koin in-game.",
-  },
-  commands: {
-    label: "Commands",
-    icon: "📜",
-    description: "Daftar lengkap perintah dasar, izin khusus, dan shortcut penting bagi pemain.",
-  },
-};
-
-const FALLBACK_ARTICLES = [
-  {
-    id: 1,
-    category: "general",
-    title: "Ranks Overview",
-    short_desc: "Pelajari hierarki tingkatan rank, benefit, serta multiplier reward donatur di MineGens.",
-  },
-  {
-    id: 2,
-    category: "general",
-    title: "Credits",
-    short_desc: "Penjelasan seputar saldo server credits, cara top-up, dan katalog credit shop.",
-  },
-  {
-    id: 3,
-    category: "general",
-    title: "Auction House",
-    short_desc: "Jual dan beli item antar pemain secara aman tanpa perlu membuat toko fisik.",
-  },
-  {
-    id: 4,
-    category: "sf",
-    title: "Player Warps",
-    short_desc: "Cara membuat warp publik sendiri dan mengunjungi warp komunitas lain.",
-  },
-  {
-    id: 5,
-    category: "sf",
-    title: "Server Warps",
-    short_desc: "Navigasi cepat ke area publik penting seperti spawn, crate, dan dungeon.",
-  },
-  {
-    id: 6,
-    category: "sf",
-    title: "Tokens",
-    short_desc: "Mekanisme pengumpulan token quest dan penukarannya dengan item langka.",
-  },
-  {
-    id: 7,
-    category: "sf",
-    title: "Quick Shop",
-    short_desc: "Panduan membuat chest shop pribadi untuk berdagang secara mandiri.",
-  },
-  {
-    id: 8,
-    category: "sf",
-    title: "Auction House",
-    short_desc: "Aturan lelang, batas durasi listing, dan biaya pajak transaksi di pasar global.",
-  },
-  {
-    id: 9,
-    category: "sf",
-    title: "Quests",
-    short_desc: "Selesaikan quest harian dan mingguan untuk meraih bonus exp serta lootbag.",
-  },
-];
+import InlineMarkdown from "../common/InlineMarkdown.jsx";
+import { supabase } from "../supabaseClient";
 
 export default function WikiPage() {
+  const [categories, setCategories] = useState([]);
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -118,62 +15,82 @@ export default function WikiPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    fetch("http://127.0.0.1:8000/api/wikis", {
-      headers: { Accept: "application/json" },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setArticles(data);
-        } else {
-          setArticles(FALLBACK_ARTICLES);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        // Mengambil kategori dan artikel panduan secara paralel dari Supabase
+        const [catResult, wikiResult] = await Promise.all([
+          supabase.from("categories").select("*").order("name", { ascending: true }),
+          supabase.from("wikis").select("*").order("created_at", { ascending: false }),
+        ]);
+
+        if (catResult.error) {
+          console.error("Gagal memuat kategori dari Supabase:", catResult.error.message);
+        } else if (catResult.data) {
+          setCategories(catResult.data);
         }
+
+        if (wikiResult.error) {
+          console.error("Gagal memuat wikis dari Supabase:", wikiResult.error.message);
+        } else if (wikiResult.data) {
+          setArticles(wikiResult.data);
+        }
+      } catch (err) {
+        console.error("Gagal memuat data wiki/kategori:", err);
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.warn("Menggunakan data lokal untuk tampilan wiki:", err);
-        setArticles(FALLBACK_ARTICLES);
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchData();
   }, []);
 
+  // Hitung jumlah artikel per kategori secara dinamis
   const categoryCounts = useMemo(() => {
     const counts = {};
-    Object.keys(CATEGORY_CONFIG).forEach((key) => {
-      counts[key] = articles.filter((a) => a.category === key).length;
+    categories.forEach((cat) => {
+      counts[cat.slug] = articles.filter((a) => a.category === cat.slug).length;
     });
     return counts;
-  }, [articles]);
+  }, [categories, articles]);
 
+  // Filter pencarian dan tombol filter aktif
   const filteredArticles = useMemo(() => {
     return articles.filter((item) => {
       const matchesFilter =
         activeFilter === "all" || item.category === activeFilter;
 
       const q = searchQuery.toLowerCase().trim();
+      const catObj = categories.find((c) => c.slug === item.category);
+      const catName = catObj ? catObj.name.toLowerCase() : "";
+
       const matchesSearch =
         !q ||
         item.title.toLowerCase().includes(q) ||
         (item.short_desc && item.short_desc.toLowerCase().includes(q)) ||
-        (CATEGORY_CONFIG[item.category] &&
-          CATEGORY_CONFIG[item.category].label.toLowerCase().includes(q));
+        catName.includes(q);
 
       return matchesFilter && matchesSearch;
     });
-  }, [articles, activeFilter, searchQuery]);
+  }, [articles, activeFilter, searchQuery, categories]);
 
+  // Kelompokkan artikel yang cocok berdasarkan kategori
   const groupedCategories = useMemo(() => {
     const groups = {};
-    Object.keys(CATEGORY_CONFIG).forEach((catKey) => {
-      const items = filteredArticles.filter((a) => a.category === catKey);
+    categories.forEach((cat) => {
+      const items = filteredArticles.filter((a) => a.category === cat.slug);
       if (items.length > 0) {
-        groups[catKey] = items;
+        groups[cat.slug] = {
+          config: cat,
+          items: items,
+        };
       }
     });
     return groups;
-  }, [filteredArticles]);
+  }, [categories, filteredArticles]);
 
-  const totalCategoriesWithContent = Object.keys(groupedCategories).length;
+  const totalGroupsWithContent = Object.keys(groupedCategories).length;
 
   return (
     <div
@@ -185,7 +102,7 @@ export default function WikiPage() {
       <main className="container-xl py-5 flex-grow-1" style={{ marginTop: "80px" }}>
         <div className="mx-auto" style={{ maxWidth: "1160px" }}>
 
-          {/* Hero Card Banner */}
+          {/* ===================== HERO CARD ===================== */}
           <div
             className="p-4 p-md-5 rounded-4 mb-5 border"
             style={{
@@ -194,7 +111,7 @@ export default function WikiPage() {
               boxShadow: "0 20px 40px -15px rgba(0,0,0,0.5)",
             }}
           >
-            {/* Top Tag & Badge */}
+            {/* Tag Garis Oranye & Counter Badge */}
             <div className="d-flex align-items-center gap-2 mb-3">
               <span
                 style={{
@@ -214,11 +131,11 @@ export default function WikiPage() {
                   fontWeight: 500,
                 }}
               >
-                {Object.keys(CATEGORY_CONFIG).length} categories · {articles.length} articles
+                {categories.length} categories · {articles.length} articles
               </span>
             </div>
 
-            {/* Main Title */}
+            {/* Judul Utama */}
             <h1
               className="fw-bolder text-white mb-3"
               style={{ fontSize: "clamp(2rem, 4vw, 2.75rem)", letterSpacing: "-0.02em" }}
@@ -226,7 +143,7 @@ export default function WikiPage() {
               MineGens Wiki
             </h1>
 
-            {/* Subtitles */}
+            {/* Subtitle */}
             <p className="text-white-50 mb-1" style={{ fontSize: "15px", lineHeight: "1.6" }}>
               Your complete guide to MineGens — every realm, command, and feature explained.
             </p>
@@ -297,15 +214,15 @@ export default function WikiPage() {
                 </span>
               </button>
 
-              {Object.entries(CATEGORY_CONFIG).map(([key, config]) => {
-                const count = categoryCounts[key] || 0;
-                const isSelected = activeFilter === key;
+              {categories.map((cat) => {
+                const count = categoryCounts[cat.slug] || 0;
+                const isSelected = activeFilter === cat.slug;
 
                 return (
                   <button
-                    key={key}
+                    key={cat.id}
                     type="button"
-                    onClick={() => setActiveFilter(isSelected ? "all" : key)}
+                    onClick={() => setActiveFilter(isSelected ? "all" : cat.slug)}
                     className="btn btn-sm rounded-pill px-3 py-1.5 d-flex align-items-center gap-2 border"
                     style={{
                       backgroundColor: isSelected ? "rgba(234, 88, 12, 0.18)" : "#0d0e11",
@@ -315,8 +232,8 @@ export default function WikiPage() {
                       transition: "all 0.15s ease",
                     }}
                   >
-                    <span style={{ fontSize: "13px" }}>{config.icon}</span>
-                    <span>{config.label}</span>
+                    <span style={{ fontSize: "13px" }}>{cat.icon || "📁"}</span>
+                    <span>{cat.name}</span>
                     <span className="text-white-50" style={{ fontSize: "11px" }}>
                       {count}
                     </span>
@@ -326,33 +243,31 @@ export default function WikiPage() {
             </div>
           </div>
 
-          {/* List Kategori & Cards */}
+          {/* ===================== SECTION & CARD WIKI ===================== */}
           {loading && (
             <div className="text-center py-5 text-white-50 small">
               Memuat artikel wiki...
             </div>
           )}
 
-          {!loading && totalCategoriesWithContent === 0 && (
+          {!loading && totalGroupsWithContent === 0 && (
             <div
               className="p-5 text-center rounded-4 border text-white-50 small"
               style={{ backgroundColor: "#141518", borderColor: "rgba(255, 255, 255, 0.06)" }}
             >
-              Tidak ada artikel yang cocok dengan pencarian "{searchQuery}".
+              {searchQuery
+                ? `Tidak ada artikel yang cocok dengan pencarian "${searchQuery}".`
+                : "Belum ada artikel panduan dalam kategori ini."}
             </div>
           )}
 
           {!loading &&
-            Object.entries(groupedCategories).map(([catKey, items]) => {
-              const config = CATEGORY_CONFIG[catKey] || {
-                label: catKey,
-                icon: "📁",
-                description: "",
-              };
+            Object.entries(groupedCategories).map(([slug, group]) => {
+              const { config, items } = group;
 
               return (
-                <section key={catKey} className="mb-5">
-                  {/* Category Header */}
+                <section key={slug} className="mb-5">
+                  {/* Category Section Header */}
                   <div className="d-flex align-items-center gap-3 mb-2">
                     <div
                       className="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
@@ -364,7 +279,7 @@ export default function WikiPage() {
                         fontSize: "18px",
                       }}
                     >
-                      {config.icon}
+                      {config.icon || "📁"}
                     </div>
 
                     <div className="d-flex align-items-center gap-2">
@@ -372,7 +287,7 @@ export default function WikiPage() {
                         className="h5 fw-bold text-white mb-0"
                         style={{ fontSize: "18px", letterSpacing: "-0.01em" }}
                       >
-                        {config.label}
+                        {config.name}
                       </h2>
                       <span
                         className="badge rounded-pill text-white-50"
@@ -388,6 +303,7 @@ export default function WikiPage() {
                     </div>
                   </div>
 
+                  {/* Category Description */}
                   {config.description && (
                     <p
                       className="text-white-50 small mb-4 ms-1"
@@ -423,7 +339,7 @@ export default function WikiPage() {
                             className="fw-bold text-white mb-2"
                             style={{ fontSize: "16px", lineHeight: "1.4" }}
                           >
-                            {art.title}
+                            <InlineMarkdown content={art.title} />
                           </h3>
 
                           <p

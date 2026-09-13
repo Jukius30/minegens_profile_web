@@ -1,103 +1,191 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../common/Navbar.jsx";
-import Footer from "../common/Footer.jsx";
+import { supabase } from "../supabaseClient";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
+    setErrorMsg("");
 
     try {
-      const res = await fetch("http://localhost:8000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password: password,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Login gagal");
+      if (error) {
+        setErrorMsg(error.message);
+        setLoading(false);
+        return;
       }
 
-      // Simpan token ke localStorage browser
-      localStorage.setItem("admin_token", data.token);
-      localStorage.setItem("admin_user", JSON.stringify(data.user));
-
-      navigate("/admin");
+      if (data?.session) {
+        // Berhasil login, sesi otomatis tersimpan di browser
+        navigate("/admin");
+      }
     } catch (err) {
-      setError(err.message);
+      setErrorMsg("Terjadi kesalahan sistem. Coba lagi.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="text-white min-vh-100 d-flex flex-column justify-content-between" style={{ backgroundColor: "#0f172a" }}>
-      <Navbar />
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#0d1117",
+        fontFamily: "sans-serif",
+        padding: "20px",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "400px",
+          backgroundColor: "#161b22",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+          borderRadius: "12px",
+          padding: "32px",
+          boxShadow: "0 8px 24px rgba(0, 0, 0, 0.5)",
+        }}
+      >
+        <div style={{ textAlign: "center", marginBottom: "24px" }}>
+          <span
+            style={{
+              color: "#38bdf8",
+              fontSize: "12px",
+              letterSpacing: "1.5px",
+              textTransform: "uppercase",
+              fontWeight: 600,
+            }}
+          >
+            Restricted Area
+          </span>
+          <h2
+            style={{
+              color: "#ffffff",
+              fontSize: "22px",
+              marginTop: "8px",
+              fontWeight: 700,
+            }}
+          >
+            Admin Panel Login
+          </h2>
+        </div>
 
-      <main className="container-xl py-5 flex-grow-1 d-flex align-items-center justify-content-center" style={{ marginTop: "80px" }}>
-        <div className="p-4 p-sm-5 rounded-3 border border-white border-opacity-10 w-100 shadow" style={{ maxWidth: "420px", backgroundColor: "#161b26" }}>
-          
-          <div className="text-center mb-4">
-            <span className="small text-uppercase fw-semibold" style={{ color: "#2f74ff" }}>Portal Staff</span>
-            <h1 className="h4 fw-bold text-white mt-1">Admin Login</h1>
+        {errorMsg && (
+          <div
+            style={{
+              backgroundColor: "rgba(239, 68, 68, 0.15)",
+              border: "1px solid rgba(239, 68, 68, 0.3)",
+              color: "#f87171",
+              padding: "10px 14px",
+              borderRadius: "6px",
+              fontSize: "13px",
+              marginBottom: "20px",
+              textAlign: "center",
+            }}
+          >
+            {errorMsg}
+          </div>
+        )}
+
+        <form
+          onSubmit={handleLogin}
+          style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+        >
+          <div>
+            <label
+              style={{
+                display: "block",
+                color: "#8b949e",
+                fontSize: "13px",
+                marginBottom: "6px",
+              }}
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="admin@example.com"
+              style={{
+                width: "100%",
+                padding: "10px 12px",
+                backgroundColor: "#0d1117",
+                border: "1px solid rgba(255, 255, 255, 0.15)",
+                borderRadius: "6px",
+                color: "#ffffff",
+                outline: "none",
+                fontSize: "14px",
+                boxSizing: "border-box",
+              }}
+            />
           </div>
 
-          {error && (
-            <div className="p-2.5 mb-3 rounded border border-danger border-opacity-25 bg-danger bg-opacity-10 text-danger small text-center">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleLogin} className="d-flex flex-column gap-3">
-            <div>
-              <label className="small text-white-50 mb-1">Email</label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="form-control text-white border-white border-opacity-10 rounded-2"
-                style={{ backgroundColor: "#0f172a" }}
-                placeholder="admin@minegens.id"
-              />
-            </div>
-
-            <div>
-              <label className="small text-white-50 mb-1">Password</label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="form-control text-white border-white border-opacity-10 rounded-2"
-                style={{ backgroundColor: "#0f172a" }}
-                placeholder="••••••••"
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn btn-primary mt-2 py-2 fw-semibold rounded-2"
-              style={{ backgroundColor: "#2f74ff", border: "none" }}
+          <div>
+            <label
+              style={{
+                display: "block",
+                color: "#8b949e",
+                fontSize: "13px",
+                marginBottom: "6px",
+              }}
             >
-              {loading ? "Memproses..." : "Masuk ke Dashboard"}
-            </button>
-          </form>
-        </div>
-      </main>
+              Password
+            </label>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              style={{
+                width: "100%",
+                padding: "10px 12px",
+                backgroundColor: "#0d1117",
+                border: "1px solid rgba(255, 255, 255, 0.15)",
+                borderRadius: "6px",
+                color: "#ffffff",
+                outline: "none",
+                fontSize: "14px",
+                boxSizing: "border-box",
+              }}
+            />
+          </div>
 
-      <Footer />
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              marginTop: "8px",
+              padding: "12px",
+              backgroundColor: loading ? "#0284c7" : "#38bdf8",
+              color: "#0f172a",
+              border: "none",
+              borderRadius: "6px",
+              fontWeight: 600,
+              fontSize: "14px",
+              cursor: loading ? "not-allowed" : "pointer",
+            }}
+          >
+            {loading ? "Memverifikasi..." : "Masuk ke Panel"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

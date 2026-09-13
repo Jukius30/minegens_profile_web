@@ -4,6 +4,7 @@ import Navbar from "../common/Navbar.jsx";
 import Footer from "../common/Footer.jsx";
 import MarkdownRenderer from "../common/MarkdownRenderer.jsx";
 import InlineMarkdown from "../common/InlineMarkdown.jsx";
+import { supabase } from "../supabaseClient";
 
 const DEFAULT_BANNER = "/Discord_Banner_Minegens_2.png";
 
@@ -16,21 +17,35 @@ export default function NewsDetailPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    fetch(`http://127.0.0.1:8000/api/news/${id}`, {
-      headers: { Accept: "application/json" },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Berita tidak ditemukan");
-        return res.json();
-      })
-      .then((data) => {
+    async function fetchArticleDetail() {
+      try {
+        setLoading(true);
+
+        // Ambil satu baris data berdasarkan ID
+        const { data, error } = await supabase
+          .from("news")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (error) {
+          console.error("Gagal mengambil detail berita:", error.message);
+          setArticle(null);
+          return;
+        }
+
         setArticle(data);
+      } catch (err) {
+        console.error("Error tidak terduga:", err);
+        setArticle(null);
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Gagal mengambil detail berita:", err);
-        setLoading(false);
-      });
+      }
+    }
+
+    if (id) {
+      fetchArticleDetail();
+    }
   }, [id]);
 
   return (
@@ -98,7 +113,7 @@ export default function NewsDetailPage() {
                   className="small text-uppercase fw-semibold"
                   style={{ color: "#2f74ff", letterSpacing: "0.08em" }}
                 >
-                  Announcement
+                  {article.badge || article.category || "Announcement"}
                 </span>
                 <span className="text-white-50 small">•</span>
                 <span className="text-white-50 small">
@@ -126,7 +141,7 @@ export default function NewsDetailPage() {
                 style={{ maxHeight: "420px", backgroundColor: "#161b26" }}
               >
                 <img
-                  src={article.image || DEFAULT_BANNER}
+                  src={article.image_url || article.image || DEFAULT_BANNER}
                   alt={article.title}
                   onError={(e) => {
                     e.currentTarget.onerror = null;
@@ -142,7 +157,16 @@ export default function NewsDetailPage() {
                 className="p-4 p-md-5 rounded-3 border border-white border-opacity-10 shadow-sm"
                 style={{ backgroundColor: "#161b26" }}
               >
-                <MarkdownRenderer content={article.full_content || article.fullContent} />
+                <MarkdownRenderer
+                  content={
+                    article.full_content ||
+                    article.fullContent ||
+                    article.content ||
+                    article.description ||
+                    article.short_desc ||
+                    ""
+                  }
+                />
               </div>
             </article>
           )}

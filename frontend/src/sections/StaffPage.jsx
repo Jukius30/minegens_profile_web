@@ -75,12 +75,6 @@ export default function StaffPage() {
           description: "Spesializes to make the player angry."
         },
         {
-          name: "Mutti",
-          role: "Admin",
-          avatar: "https://minotar.net/helm/Mutti/100.png",
-          description: "Oversees the overall direction and strategy of the MineGens project."
-        },
-        {
           name: "Waltz",
           role: "Admin",
           avatar: "https://minotar.net/helm/Waltz/100.png",

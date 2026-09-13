@@ -4,6 +4,7 @@ import Navbar from "../common/Navbar.jsx";
 import Footer from "../common/Footer.jsx";
 import MarkdownRenderer from "../common/MarkdownRenderer.jsx";
 import InlineMarkdown from "../common/InlineMarkdown.jsx";
+import { supabase } from "../supabaseClient";
 
 const categoryLabels = {
   general: "Supporting Minegens",
@@ -18,26 +19,56 @@ export default function WikiDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [wiki, setWiki] = useState(null);
+  const [categoryName, setCategoryName] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    fetch(`http://127.0.0.1:8000/api/wikis/${id}`, {
-      headers: { Accept: "application/json" },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Artikel panduan tidak ditemukan");
-        return res.json();
-      })
-      .then((data) => {
+    async function fetchWikiDetail() {
+      try {
+        setLoading(true);
+
+        // Ambil data artikel dari Supabase berdasarkan ID
+        const { data, error } = await supabase
+          .from("wikis")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (error || !data) {
+          console.error("Gagal memuat wiki:", error?.message);
+          setWiki(null);
+          return;
+        }
+
         setWiki(data);
+
+        // Cari nama kategori dari tabel categories jika ada
+        if (data.category) {
+          const { data: catData } = await supabase
+            .from("categories")
+            .select("name")
+            .eq("slug", data.category)
+            .maybeSingle();
+
+          if (catData?.name) {
+            setCategoryName(catData.name);
+          } else {
+            setCategoryName(categoryLabels[data.category] || data.category);
+          }
+        }
+      } catch (err) {
+        console.error("Error tidak terduga:", err);
+        setWiki(null);
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Gagal memuat wiki:", err);
-        setLoading(false);
-      });
+      }
+    }
+
+    if (id) {
+      fetchWikiDetail();
+    }
   }, [id]);
 
   return (
@@ -110,7 +141,7 @@ export default function WikiDetailPage() {
                     letterSpacing: "0.05em",
                   }}
                 >
-                  {categoryLabels[wiki.category] || wiki.category}
+                  {categoryName || categoryLabels[wiki.category] || wiki.category}
                 </span>
                 <span className="text-white-50 small">•</span>
                 <span
@@ -131,9 +162,11 @@ export default function WikiDetailPage() {
               </h1>
 
               {/* Ringkasan Header */}
-              <p className="text-white-50 mb-4" style={{ fontSize: "15px", lineHeight: "1.6" }}>
-                {wiki.short_desc}
-              </p>
+              {wiki.short_desc && (
+                <p className="text-white-50 mb-4" style={{ fontSize: "15px", lineHeight: "1.6" }}>
+                  {wiki.short_desc}
+                </p>
+              )}
 
               {/* Isi Konten Lengkap (Markdown) */}
               <div
@@ -143,7 +176,7 @@ export default function WikiDetailPage() {
                   borderColor: "rgba(255, 255, 255, 0.08)",
                 }}
               >
-                <MarkdownRenderer content={wiki.full_content} />
+                <MarkdownRenderer content={wiki.full_content || wiki.content || ""} />
               </div>
             </article>
           )}
